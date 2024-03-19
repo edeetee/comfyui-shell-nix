@@ -30,6 +30,18 @@
 					tqdm
 					psutil
 					kornia
+					numba
+					opencv4
+					GitPython
+					numexpr
+					matplotlib
+					pandas
+
+					imageio-ffmpeg
+					scikit-image
+					pip
+
+					accelerate
 				];
 	  };
 
@@ -42,15 +54,7 @@
 				installPhase = ''
 					mkdir -p $out/bin
 					cp -r $src/* $out
-
-					for dir in "output" "user" "temp" "input"; do
-						if [ ! -d $dir ]; then
-							path="./$dir"
-							mkdir -p "$path"
-							ln -s "$path" "$out/$dir"
-						fi
-					done
-
+					
 					cp ${self}/extra_model_paths.yaml $out
 				'';
 			};
@@ -59,7 +63,9 @@
 				name = "comfyuimain";
 				text = ''
 					#!/usr/bin/env bash
-					HSA_OVERRIDE_GFX_VERSION=10.3.0 ${pyenv}/bin/python ${comfyuisrc}/main.py "$@"
+					COMFYUI_PATH="$1"
+					shift
+					HSA_OVERRIDE_GFX_VERSION=10.3.0 ${pyenv}/bin/python "$COMFYUI_PATH/main.py" "$@"
 				'';
 			};
 
